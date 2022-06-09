@@ -1,57 +1,44 @@
 // Copyright 2021 NNTU-CS
 #include "train.h"
-
-Train::Train(): countOp(0), first(nullptr) {}
-
-void Train::addCage(bool light) {
-    if (first != nullptr) {
-        Cage* vag;
-        vag = new Cage;
-        vag->light = light;
-        vag->next = nullptr;
-        vag->prev = last;
-        last->next = vag;
-        last = vag;
-    } else {
-        first = new Cage;
-        first->light = light;
-        first->next = nullptr;
-        first->prev = nullptr;
-        last = first;
-        return;
-    }
+  Train::Train() :first(nullptr), countOp(0) {}
+  void Train::addCage(bool light) {
+  Cage* cage = new Cage;
+  cage->light = light;
+  if (!first) {
+  cage->next = cage;
+  cage->prev = cage;
+  first = cage;
+  return;
 }
-int Train::getLength() {
-        first->light = true;
-        first->prev = last;
-        last->next = first;
-        Cage* temp = first;
-        Cage* cell = first->next;
-        while (cell != nullptr) {
-            if (!cell->light) {
-                count++;
-                countOp++;
-                cell = cell->next;
-            } else {
-                if (cell->light) {
-                        cell->light = 0;
-                    countOp++;
-                }
-                for (int i = count; i > 0; i--) {
-                    cell = cell->prev;
-                    countOp++;
-                }
-                if (!cell->light) {
-                    break;
-                }
-                cell = cell->next;
-                count = 1;
-            }
-        }
-        return count;
-    }
-
-int Train::getOpCount() {
+  cage->next = first->next;
+  cage->prev = first;
+  first->next->prev = cage;
+  first->next = cage;
+}
+  int Train::getLength() {
+  int trainLenght = 0;
+  int lenght = 0;
+  countOp = 0;
+  Cage* current = first;
+  first->light = true;
+  while (true) {
+  countOp++;
+  lenght++;
+  current = current->next;
+  if (current->light) {
+  current->light = false;
+  trainLenght = lenght;
+  for (trainLenght; trainLenght > 0; --trainLenght) {
+  current = current->prev;
+  countOp++;
+}
+  if (!(current->light)) {
+  return lenght;
+}
+  lenght = trainLenght;
+}
+}
+}
+  int Train::getOpCount() {
   return countOp;
 }
-//
